@@ -5,13 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,6 +53,21 @@ class Bftp2EconotravelServerApplicationTests {
         );
 
         experienceRepository.saveAll(movies);
+    }
+
+    @Test
+    void createsNewExperiences() throws Exception {
+
+        mockMvc.perform(post("/api/experiences")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\": \"Paseo en Bici por el Montseny\"}")
+        ).andExpect(status().is(200));
+
+        var experiences = experienceRepository.findAll();
+
+        assertThat(experiences, contains(
+                hasProperty("name", is("Paseo en Bici por el Montseny"))
+        ));
     }
 
 }

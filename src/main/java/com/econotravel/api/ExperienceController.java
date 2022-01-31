@@ -1,14 +1,14 @@
 package com.econotravel.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/experiences")
+// NO INCLUIR NUNCA LA CABECERA CrossOrigin en un proyecto real
+@CrossOrigin
 public class ExperienceController {
 
     private final ExperienceRepository experienceRepository;
@@ -23,6 +23,11 @@ public class ExperienceController {
 
         return experienceRepository.findAll();
 
+    }
+
+    @PostMapping
+    public Experience createExperience(@RequestBody Experience experience) {
+        return experienceRepository.save(experience);
     }
 
 }
